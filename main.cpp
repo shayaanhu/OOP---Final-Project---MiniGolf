@@ -26,15 +26,12 @@ Screen myScreen("MiniGolf", 1000, 650);
 
 // Loading all the textures and creating the game objects.
 SDL_Texture* ballTexture = myScreen.loadTexture("ball.png");
-Ball ball = Ball(Vector2f(0, 0), ballTexture);
+SDL_Texture* powerMeterFG = myScreen.loadTexture("powermeterFG.png");
+SDL_Texture* powerMeterBG = myScreen.loadTexture("powermeterBG.png");
+Ball ball = Ball(Vector2f(0, 0), ballTexture, powerMeterFG, powerMeterBG);
 
 SDL_Texture* arrowTexture = myScreen.loadTexture("point.png");
 Arrow arrow = Arrow(Vector2f(0,0), arrowTexture);
-
-SDL_Texture* powerMeterFG = myScreen.loadTexture("powermeterFG.png");
-SDL_Texture* powerMeterBG = myScreen.loadTexture("powermeterBG.png");
-// SDL_Texture* powerMeterOverlay = myScreen.loadTexture("powermeterOverlay.png");
-// std::vector<Powermeter> powerMeter = {};
 
 SDL_Texture* holeTexture = myScreen.loadTexture("hole.png");
 Hole hole = Hole(Vector2f(0, 0), holeTexture);
@@ -98,9 +95,7 @@ void update() {
     }
 
     arrow.setPosition(-100, -100); // Setting the arrow's position outside the screen while not in use.
-    powerMeter.at(0).setPosition(-100, -100); // Setting the power meter's position outside the screen while not in use.
-    powerMeter.at(1).setPosition(-100, -100);
-    ball.update(deltaTime, mouseDown, mousePressed, hole, tiles, arrow, powerMeter);
+    ball.update(deltaTime, mouseDown, mousePressed, hole, tiles, arrow);
 }
 
 void graphics() {
@@ -114,9 +109,11 @@ void graphics() {
         myScreen.render(t);
     }
 
-    for (Powermeter& p : powerMeter) {
-        myScreen.render(p);
+    for (Entity& e : ball.getPowerMeter()) {
+        myScreen.render(e);
     }
+
+    // render powermeter
 
     myScreen.display();
 
