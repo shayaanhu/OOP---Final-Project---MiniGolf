@@ -1,7 +1,13 @@
 #include "ball.hpp"
 #include <vector>
 
-Ball::Ball(Vector2f position, SDL_Texture* texture) : Entity(position, texture) {}
+Ball::Ball(Vector2f position, SDL_Texture* texture, SDL_Texture* powermeterFG, SDL_Texture* powermeterBG) : Entity(position, texture) {
+    powerMeter.push_back(Entity(Vector2f(0,0), powermeterBG));
+    powerMeter.push_back(Entity(Vector2f(0,0), powermeterFG));   
+    powerMeter.at(0).setScale(0.2, 0.2);
+    powerMeter.at(1).setScale(0.2, 0.2);
+
+}
 
 void Ball::setVelocity(float x, float y) {
     velocity.x = x;
@@ -39,9 +45,8 @@ void Ball::setWin(bool w) {
     win = w;
 }
 
-void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, std::vector<Tile> tiles, Arrow& arrow, std::vector<Powermeter> powerMeter) {
+void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, std::vector<Tile> tiles, Arrow& arrow) {
 
-    
     // Keep running these steps to put the ball into the hole
     if (win == true) {
 
@@ -76,10 +81,11 @@ void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, s
     }
 
     // Win condition:
-    // std::cout << "BALL POSITIONX: " << getPosition().x << "HOLE POSITIONX:" << h.getPosition().x;
-    // std::cout << "BALL POSITIONY: " << getPosition().y << "HOLE POSITIONY:" << h.getPosition().y << std::endl;
-    
-    if (getPosition().x + 2 > h.getPosition().x && getPosition().x < h.getPosition().x + 40 && getPosition().y + 2 > h.getPosition().y && getPosition().y < h.getPosition().y + 40){
+    // Ball's velocity must not be too high, otherwise it will go past the hole.
+    std::cout << "BALL POSITIONX: " << getPosition().x << "HOLE POSITIONX:" << h.getPosition().x;
+    std::cout << "BALL POSITIONY: " << getPosition().y << "HOLE POSITIONY:" << h.getPosition().y << std::endl;
+    // std::cout << "BALL VELOCITYX" << getVelocity().x << "BALL VELOCITYY" << getVelocity().y << std::endl;
+    if (abs(getVelocity().x) < 0.4 and abs(getVelocity().x) < 0.4 and getPosition().x > h.getPosition().x + 20 && getPosition().x < h.getPosition().x + 40 && getPosition().y > h.getPosition().y + 20 && getPosition().y < h.getPosition().y + 40){
         // std::cout << "WON ";
         setWin(true);
         target.x = h.getPosition().x;
@@ -113,23 +119,27 @@ void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, s
 
         // Power meter logic:
         // powerMeter.at(0).setPosition(400, 100);
-        std::cout << "POWERMETERX" << powerMeter.at(0).getPosition().x << std::endl;
-        powerMeter.at(0).setPosition(getPosition().x + 100, getPosition().y);
-        std::cout << "AFTER SETPOS POWERMETERX" << powerMeter.at(0).getPosition().x << std::endl;
-        powerMeter.at(1).setPosition(getPosition().x + 100, getPosition().y - 32 + 4 + 32 - 32*powerMeter.at(1).getScale().y);
+        // std::cout << "POWERMETERX" << powerMeter.at(0).getPosition().x << std::endl;
+        powerMeter.at(0).setPosition(getPosition().x + 73.5, getPosition().y - 180);
+        // std::cout << "AFTER SETPOS POWERMETERX" << powerMeter.at(0).getPosition().x << std::endl;
+        powerMeter.at(1).setPosition(getPosition().x + 80, getPosition().y - 174);
 
         if (velocity1D > 1) {
             velocity1D = 1;
             launchedVelocity1D = 1;
         }
 
-        powerMeter.at(1).setScale(1, velocity1D/1);
+        powerMeter.at(1).setScale(0.2, abs(velocity1D * 0.2));
+        
     }
 
     // While the ball is moving.
     // Collision logic:
     else
     {
+        // Setting the powerMeter's position outside the screen when not in use
+        powerMeter.at(0).setPosition(-100, -100);
+        powerMeter.at(1).setPosition(-100, -100);
         canMove = false;
         setPosition(getPosition().x + getVelocity().x*deltaTime, getPosition().y + getVelocity().y*deltaTime);
         if (getVelocity().x > 0.0001 || getVelocity().x < -0.0001 || getVelocity().y > 0.0001 || getVelocity().y < -0.0001)
@@ -196,9 +206,9 @@ void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, s
 
 }
 
-// std::vector<Entity> Ball::getPowerMeter() {
-//     return powerMeter;
-// }
+std::vector<Entity> Ball::getPowerMeter() {
+    return powerMeter;
+}
 
 int Ball::getStrokes() {
     return strokes;
