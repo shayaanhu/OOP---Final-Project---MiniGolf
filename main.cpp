@@ -71,7 +71,18 @@ void loadLevel(int level) {
     }
 	
 }
+void loadMusic() {
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+    std::cerr << "SDL_mixer initialization failed: " << Mix_GetError() << std::endl;
+    // cleanup();
+    // return -1;
+    }
 
+    backgroundMusic = Mix_LoadMUS("C:\\Users\\coolm\\Desktop\\Project\\Project\\back.mp3"); // Replace with the actual path to your music file
+    if (!backgroundMusic) {
+        std::cerr << "Failed to load background music: " << Mix_GetError() << std::endl;
+    }
+}
 void update() {
     lastTick = currentTick;
     currentTick = SDL_GetPerformanceCounter();
@@ -128,7 +139,7 @@ int main(int argc, char* argv[]) {
 	const int targetFPS = 140;
     const int delayTime = 1000 / targetFPS;
 	loadLevel(0);
-
+	loadMusic();
     while (gameRunning) {
     	update();
         graphics();
