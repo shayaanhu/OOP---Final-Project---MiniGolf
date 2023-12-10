@@ -39,6 +39,7 @@ Hole hole = Hole(Vector2f(0, 0), holeTexture);
 
 SDL_Texture* tileLightTexture = myScreen.loadTexture("tileLight.png");
 std::vector<Tile> tiles = {};
+std::vector<Rectangle> rect = {};
 
 SDL_Texture* backgroundTexture = myScreen.loadTexture("backTest.png");
 Mix_Music* backgroundMusic = nullptr;
@@ -48,28 +49,53 @@ void loadLevel(int level) {
     ball.setScale(0.2, 0.2);
     hole.setScale(0.175, 0.175);
     arrow.setPosition(-100, -100);
-    // powerMeter.push_back(Powermeter(Vector2f(0,0), powerMeterFG));
-    // powerMeter.push_back(Powermeter(Vector2f(0,0), powerMeterBG));
-    // powerMeter.at(0).setPosition(400, 100);
-    // powerMeter.at(1).setPosition(200, 200);
+    powerMeter.push_back(Entity(Vector2f(0,0), powerMeterBG));
+    powerMeter.push_back(Entity(Vector2f(0,0), powerMeterFG));
 
     switch (level) {
         case 0:
-        tiles.push_back(Tile(Vector2f(200, 200), tileLightTexture));
-        // tiles.push_back(Tile(Vector2f(144, 200), tileLightTexture));
-        tiles.push_back(Tile(Vector2f(200, 100), tileLightTexture));
-        tiles.push_back(Tile(Vector2f(380, 200), tileLightTexture));
-        tiles.push_back(Tile(Vector2f(380, 100), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(350, 100), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(230, 100), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(350, 200), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(230, 200), tileLightTexture));
         hole.setPosition(350, 200);
+
+        tiles.push_back(Tile(Vector2f(550, 40), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(570, 200), tileLightTexture));
+
+        
+
+        
         break;
 
-        case 1:
+        // case 1:
+        tiles.push_back(Tile(Vector2f(550, 40), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(570, 200), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(600, 120), tileLightTexture));
+        rect.push_back(Rectangle(Vector2f(480, 100), Vector2f(480, 150), tileLightTexture));
+        rect.push_back(Rectangle(Vector2f(660, 100), Vector2f(660, 150), tileLightTexture));
+        rect.push_back(Rectangle(Vector2f(635, 40), Vector2f(685, 40), tileLightTexture));
+        hole.setPosition(600, 180);
+        
+
+        
         break;
 
         case 2:
+        tiles.push_back(Tile(Vector2f(165, 375), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(590, 375), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(510, 390), tileLightTexture));
+        rect.push_back(Rectangle(Vector2f(100, 340), Vector2f(100, 390), tileLightTexture));
+        rect.push_back(Rectangle(Vector2f(35, 220), Vector2f(35, 270), tileLightTexture));
+        rect.push_back(Rectangle(Vector2f(120, 200), Vector2f(120, 250), tileLightTexture));
+        rect.push_back(Rectangle(Vector2f(300, 250), Vector2f(350, 250), tileLightTexture));
+        rect.push_back(Rectangle(Vector2f(420, 200), Vector2f(470, 200), tileLightTexture));
+        rect.push_back(Rectangle(Vector2f(535, 250), Vector2f(585, 250), tileLightTexture));
+        rect.push_back(Rectangle(Vector2f(180, 200), Vector2f(230, 200), tileLightTexture));
+        rect.push_back(Rectangle(Vector2f(650, 310), Vector2f(650, 360), tileLightTexture));
+        hole.setPosition(400, 470);
         break;
     }
-	
 }
 void loadMusic() {
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
