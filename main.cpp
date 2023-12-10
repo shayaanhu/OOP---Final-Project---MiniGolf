@@ -11,6 +11,7 @@
 #include <SDL_ttf.h>
 #include <iostream>
 #include <vector>
+#include <SDL_mixer.h>
 
 Uint64 currentTick = SDL_GetPerformanceCounter();
 Uint64 lastTick = 0;
@@ -40,6 +41,7 @@ SDL_Texture* tileLightTexture = myScreen.loadTexture("tileLight.png");
 std::vector<Tile> tiles = {};
 
 SDL_Texture* backgroundTexture = myScreen.loadTexture("backTest.png");
+Mix_Music* backgroundMusic = nullptr;
 
 void loadLevel(int level) {
 
@@ -67,6 +69,7 @@ void loadLevel(int level) {
         case 2:
         break;
     }
+	
 }
 
 void update() {
