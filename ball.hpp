@@ -4,6 +4,7 @@
 #include "entity.hpp"
 #include "hole.hpp"
 #include "tile.hpp"
+#include "rectangle.hpp"
 #include "arrow.hpp"
 #include "powermeter.hpp"
 #include <vector>
@@ -28,26 +29,27 @@ private:
     bool win = false;
     int index;
 
-    Entity powerBar;
+    std::vector<Entity> powerMeter;
     // Entity arrow;
     
 public:
-    Ball(Vector2f position, SDL_Texture* texture);
+    Ball(Vector2f position, SDL_Texture* texture, SDL_Texture* pmFG, SDL_Texture* pmBG);
 
     void setVelocity(float x, float y);
     void setLaunchedVelocity(float x, float y);
     void setInitialMousePosition(float x, float y);
-    void update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, std::vector<Tile> tiles, Arrow& arrow, std::vector<Powermeter> powerMeter);
+    void update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, std::vector<Tile> tiles, std::vector<Rectangle> rect, Arrow& arrow);
     void render(SDL_Renderer* renderer);
 
     Vector2f& getVelocity();
     Vector2f& getLaunchedVelocity();
     Vector2f& getInitialMousePosition();
-    // std::vector<Entity> getPowerMeter();
+    std::vector<Entity> getPowerMeter();
     // Entity& getArrow();
     int getStrokes();
     bool isWin();
     void setWin(bool w);
+    bool getWin();
 
     // Add other member functions and variables as needed
 
