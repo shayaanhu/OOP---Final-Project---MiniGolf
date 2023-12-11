@@ -109,6 +109,14 @@ void loadMusic() {
         std::cerr << "Failed to load background music: " << Mix_GetError() << std::endl;
     }
 }
+void cleanup() {
+    if (backgroundMusic) {
+        Mix_FreeMusic(backgroundMusic);
+    }
+    IMG_Quit(); // Clean up SDL_image
+    Mix_CloseAudio(); // Clean up SDL_mixer
+    SDL_Quit(); // SDL_Quit should be here
+}
 void update() {
     lastTick = currentTick;
     currentTick = SDL_GetPerformanceCounter();
@@ -163,14 +171,16 @@ int main(int argc, char* argv[]) {
 
     // Locking the FPS to roughly 120 (saves GPU power).
 	const int targetFPS = 140;
-    const int delayTime = 1000 / targetFPS;
+	const int delayTime = 1000 / targetFPS;
 	loadLevel(0);
 	loadMusic();
-    while (gameRunning) {
-    	update();
-        graphics();
+    
+	while (gameRunning) {
+    		update();
+        	graphics();
 		SDL_Delay(delayTime);
     }
+	cleanup();
     
     return 0;
 }
