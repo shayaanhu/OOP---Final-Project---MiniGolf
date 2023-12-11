@@ -117,6 +117,10 @@ void cleanup() {
     Mix_CloseAudio(); // Clean up SDL_mixer
     SDL_Quit(); // SDL_Quit should be here
 }
+void playMusic() {
+    Mix_PlayMusic(backgroundMusic, -1); // -1 means loop indefinitely
+}
+
 void update() {
     lastTick = currentTick;
     currentTick = SDL_GetPerformanceCounter();
@@ -174,12 +178,13 @@ int main(int argc, char* argv[]) {
 	const int delayTime = 1000 / targetFPS;
 	loadLevel(0);
 	loadMusic();
+	playMusic();
     
 	while (gameRunning) {
     		update();
         	graphics();
 		SDL_Delay(delayTime);
-    }
+    	}
 	cleanup();
     
     return 0;
