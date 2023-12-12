@@ -66,8 +66,8 @@ void loadLevel(int level) {
         ball.setWin(false);
         tiles.push_back(Tile(Vector2f(125, 150), tileLightTexture));
         tiles.push_back(Tile(Vector2f(125, 50), tileLightTexture));
-        tiles.push_back(Tile(Vector2f(325, 150), tileLightTexture));
-        tiles.push_back(Tile(Vector2f(325, 50), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(320, 150), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(320, 50), tileLightTexture));
         hole.setPosition(330, 180);
         break;
 
