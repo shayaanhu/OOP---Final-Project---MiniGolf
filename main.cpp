@@ -28,32 +28,41 @@ bool mousePressed = false;
 Screen myScreen("MiniGolf", 1000, 650);
 
 // Loading all the textures and creating the game objects.
-SDL_Texture* ballTexture = myScreen.loadTexture("ball.png");
-SDL_Texture* powerMeterFG = myScreen.loadTexture("powermeterFG.png");
-SDL_Texture* powerMeterBG = myScreen.loadTexture("powermeterBG.png");
+SDL_Texture* ballTexture = myScreen.loadTexture("assets/ball.png");
+SDL_Texture* powerMeterFG = myScreen.loadTexture("assets/powermeterFG.png");
+SDL_Texture* powerMeterBG = myScreen.loadTexture("assets/powermeterBG.png");
 Ball ball = Ball(Vector2f(0, 0), ballTexture, powerMeterFG, powerMeterBG);
 
-SDL_Texture* arrowTexture = myScreen.loadTexture("point.png");
+SDL_Texture* arrowTexture = myScreen.loadTexture("assets/arrow.png");
 Arrow arrow = Arrow(Vector2f(0,0), arrowTexture);
 
-SDL_Texture* holeTexture = myScreen.loadTexture("hole.png");
+SDL_Texture* holeTexture = myScreen.loadTexture("assets/hole.png");
 Hole hole = Hole(Vector2f(0, 0), holeTexture);
 
-SDL_Texture* tileLightTexture = myScreen.loadTexture("tileLight.png");
+SDL_Texture* tileLightTexture = myScreen.loadTexture("assets/tileLight.png");
 std::vector<Tile> tiles = {};
 std::vector<Rectangle> rect = {};
 
-SDL_Texture* startScreenTexture = myScreen.loadTexture("start.png");
-SDL_Texture* backgroundTexture = myScreen.loadTexture("backTest.png");
-SDL_Texture* endScreenTexture = myScreen.loadTexture("end.png");
-
-// Fonts
-TTF_Font* font = TTF_OpenFont("font.ttf", 50);
-SDL_Color white = {255, 255, 255};
-SDL_Color black = {0, 0, 0};
+SDL_Texture* startScreenTexture = myScreen.loadTexture("assets/start.png");
+SDL_Texture* backgroundTexture = myScreen.loadTexture("assets/background.png");
+SDL_Texture* endScreenTexture = myScreen.loadTexture("assets/end.png");
 
 // Music:
 Mix_Music* backgroundMusic = nullptr;
+
+TTF_Font* loadFont(const std::string& fontPath, int fontSize) 
+{
+    TTF_Font* font = TTF_OpenFont(fontPath.c_str(), fontSize);
+    if (font == nullptr) {
+        std::cerr << "Font loading failed: " << TTF_GetError() << std::endl;
+    }
+    return font;
+}
+
+// Fonts
+TTF_Font* font = loadFont("assets/font.ttf", 50);
+SDL_Color white = {255, 255, 255};
+SDL_Color black = {0, 0, 0};
 
 void loadLevel(int level) {
 
@@ -66,8 +75,8 @@ void loadLevel(int level) {
         ball.setWin(false);
         tiles.push_back(Tile(Vector2f(125, 150), tileLightTexture));
         tiles.push_back(Tile(Vector2f(125, 50), tileLightTexture));
-        tiles.push_back(Tile(Vector2f(320, 150), tileLightTexture));
-        tiles.push_back(Tile(Vector2f(320, 50), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(325, 150), tileLightTexture));
+        tiles.push_back(Tile(Vector2f(325, 50), tileLightTexture));
         hole.setPosition(330, 180);
         break;
 
@@ -100,17 +109,18 @@ void loadLevel(int level) {
         break;
     }
 }
-//load the music by replacing the actual path with the music file we have added 
+
 void loadMusic() {
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
     std::cerr << "SDL_mixer initialization failed: " << Mix_GetError() << std::endl; }
 
-    backgroundMusic = Mix_LoadMUS("music.mp3"); // Replace with the actual path to your music file
+    backgroundMusic = Mix_LoadMUS("assets/music.mp3"); // Replace with the actual path to your music file
     if (!backgroundMusic) {
         std::cerr << "Failed to load background music: " << Mix_GetError() << std::endl;
     }
-//memory management for music
+
 }
+
 void cleanup() {
     if (backgroundMusic) {
         Mix_FreeMusic(backgroundMusic);
@@ -119,7 +129,7 @@ void cleanup() {
     Mix_CloseAudio(); // Clean up SDL_mixer
     SDL_Quit(); // SDL_Quit should be here
 }
-//playing the music.mp3 file in a loop that continues until the game is being run
+
 void playMusic() {
     Mix_PlayMusic(backgroundMusic, -1); // -1 means loop indefinitely
 }
@@ -200,23 +210,25 @@ int main(int argc, char* argv[]) {
 
     // Locking the FPS to roughly 120 (saves GPU power).
 	const int targetFPS = 140;
-    	const int delayTime = 1000 / targetFPS;
-    // loading level 0 as the game starts
+    const int delayTime = 1000 / targetFPS;
 	loadLevel(0);
-    // loading and playing th music as the game begins
-    	loadMusic();
+    loadMusic();
 	playMusic();
-    //applying condition of looping the update and graphics functions to go about them again and again as the game continues to run
-    	while (gameRunning) {
-    		update();
-        	graphics();
+
+    while (gameRunning) {
+    	update();
+        graphics();
 		SDL_Delay(delayTime);
-    	}
-    // cleaning the memory from the music once the game is upon closure
-    	cleanup();
+    }
+
+    cleanup();
     
-    	return 0;
+    return 0;
 }
+
+
+
+
 
 
 
