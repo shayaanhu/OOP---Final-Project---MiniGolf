@@ -6,5 +6,6 @@
 
 class Arrow : public Entity {
 public: 
+    Arrow();
     Arrow(Vector2f pos, SDL_Texture* tex);
 };
