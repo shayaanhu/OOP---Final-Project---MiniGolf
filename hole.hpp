@@ -6,5 +6,8 @@
 
 class Hole : public Entity {
 public: 
+    Hole();
     Hole(Vector2f pos, SDL_Texture* tex);
+    virtual Vector2f getPosition() override;
+
 };
