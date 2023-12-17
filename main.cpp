@@ -100,7 +100,7 @@ void loadLevel(int level) {
         break;
     }
 }
-
+//load the music by replacing the actual path with the music file we have added 
 void loadMusic() {
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
     std::cerr << "SDL_mixer initialization failed: " << Mix_GetError() << std::endl; }
@@ -109,7 +109,7 @@ void loadMusic() {
     if (!backgroundMusic) {
         std::cerr << "Failed to load background music: " << Mix_GetError() << std::endl;
     }
-
+//memory management for music
 }
 void cleanup() {
     if (backgroundMusic) {
@@ -119,7 +119,7 @@ void cleanup() {
     Mix_CloseAudio(); // Clean up SDL_mixer
     SDL_Quit(); // SDL_Quit should be here
 }
-
+//playing the music.mp3 file in a loop that continues until the game is being run
 void playMusic() {
     Mix_PlayMusic(backgroundMusic, -1); // -1 means loop indefinitely
 }
@@ -200,20 +200,22 @@ int main(int argc, char* argv[]) {
 
     // Locking the FPS to roughly 120 (saves GPU power).
 	const int targetFPS = 140;
-    const int delayTime = 1000 / targetFPS;
+    	const int delayTime = 1000 / targetFPS;
+    // loading level 0 as the game starts
 	loadLevel(0);
-    loadMusic();
+    // loading and playing th music as the game begins
+    	loadMusic();
 	playMusic();
-
-    while (gameRunning) {
-    	update();
-        graphics();
+    //applying condition of looping the update and graphics functions to go about them again and again as the game continues to run
+    	while (gameRunning) {
+    		update();
+        	graphics();
 		SDL_Delay(delayTime);
-    }
-
-    cleanup();
+    	}
+    // cleaning the memory from the music once the game is upon closure
+    	cleanup();
     
-    return 0;
+    	return 0;
 }
 
 
