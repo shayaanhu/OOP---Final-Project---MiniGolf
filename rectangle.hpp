@@ -6,7 +6,9 @@
 #include "tile.hpp"
 #include "screen.hpp"
 #include <vector>
+
 //making the rectangle class that handles the tiles in the game
+// we have used AGGREGATION concept here as tiles can exist on their own
 class Rectangle: public Entity{
     private:
     Tile tile1;
