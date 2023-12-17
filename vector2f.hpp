@@ -15,6 +15,7 @@ public:
     // Copy constructor
     Vector2f(const Vector2f& other);
 
+    // OPERATOR OVERLOADING:
     // Assignment operator
     Vector2f& operator=(const Vector2f& other);
 
