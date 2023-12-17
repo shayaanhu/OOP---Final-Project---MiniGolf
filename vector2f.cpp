@@ -7,6 +7,7 @@ Vector2f::Vector2f(float x, float y) : x(x), y(y) {}
 
 Vector2f::Vector2f(const Vector2f& other) : x(other.x), y(other.y) {}
 
+// OPERATOR OVERLOADING
 Vector2f& Vector2f::operator=(const Vector2f& other) {
     if (this != &other) {
         x = other.x;
