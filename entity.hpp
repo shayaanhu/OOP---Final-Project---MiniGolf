@@ -6,6 +6,9 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+// Entity is essentially everything displayed on the screen.
+// Since they all have a texture and position (and some other similar attributes), we can inherit all of them from Entity.
+// Entity is basically our master/base/gameOjbect class.
 class Entity {
 protected:
     Vector2f position;
