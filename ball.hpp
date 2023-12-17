@@ -1,6 +1,12 @@
 #include "ball.hpp"
 #include <vector>
 
+// Default constructor.
+Ball::Ball() {}
+
+// Parameterized constructor. 
+// Sets the ball's position and texture.
+// Also creates its powerMeter.
 Ball::Ball(Vector2f position, SDL_Texture* texture, SDL_Texture* powermeterFG, SDL_Texture* powermeterBG) : Entity(position, texture) {
     powerMeter.push_back(Entity(Vector2f(0,0), powermeterBG));
     powerMeter.push_back(Entity(Vector2f(0,0), powermeterFG));   
@@ -9,54 +15,60 @@ Ball::Ball(Vector2f position, SDL_Texture* texture, SDL_Texture* powermeterFG, S
 
 }
 
+// Sets the Ball's current velocity.
 void Ball::setVelocity(float x, float y) {
     velocity.x = x;
     velocity.y = y;
 }
 
+// Sets the Ball's current launchedVelocity.
 void Ball::setLaunchedVelocity(float x, float y) {
     launchedVelocity.x = x;
     launchedVelocity.y = y;
 }
 
+// Sets the current position of the mouse when first clicked.
 void Ball::setInitialMousePosition(float x, float y) {
     initialMousePosition.x = x;
     initialMousePosition.y = y;
 }
 
+// Returns the ball's current velocity.
 Vector2f& Ball::getVelocity() {
     return velocity;
 }
 
+// Returns the ball's current launchedVelocity.
 Vector2f& Ball::getLaunchedVelocity() {
     return launchedVelocity;
 }
 
+// Returns the current position of the mouse once its dragged out.
 Vector2f& Ball::getInitialMousePosition() {
     return initialMousePosition;
 }
 
-// void Ball::render(SDL_Renderer* renderer) {
-//     SDL_Rect destRect = { static_cast<int>(getPosition().x), static_cast<int>(getPosition().y), getCurrentFrame().w * getScale().x, getCurrentFrame().h * getScale().y};
-//     SDL_RenderCopy(renderer, getTexture(), nullptr, &destRect);
-// }
-
+// Sets the ball's win attribute to win.
 void Ball::setWin(bool w) {
     win = w;
 }
 
+// Returns wether or not the win condition has been met.
 bool Ball::getWin() {
     return win;
 }
 
+// Our most important function.
+// Handles everything related to the ball while the game is running.
 void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, std::vector<Tile> tiles, std::vector<Rectangle> rect, Arrow& arrow) {
 
-    // Keep running these steps to put the ball into the hole
+    // Keep running these steps to put the ball into the hole once the win condition has been met (ball is sufficiently close to the hole).
     if (win == true) {
 
         // Getting the current position of the ball to check for collisons:
         Vector2f currentPosition = getPosition();
 
+        // Depending on the ball's current position and the position of the hole, move the ball towards the hole.
         if (currentPosition.x < target.x)
         {
             // std::cout << "A";
@@ -78,25 +90,31 @@ void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, s
             setPosition(currentPosition.x, currentPosition.y - 1 * deltaTime);
         }
 
+        // Set the ball's scale to very very small so that it looks like it goes inside the hole.
         Vector2f currentScale = getScale();
         setScale(currentScale.x - 1 * deltaTime, currentScale.y - 1 * deltaTime);
 
         return;
     }
 
-    // Win condition:
-    // Ball's velocity must not be too high, otherwise it will go past the hole.
+    
     // std::cout << "BALL POSITIONX: " << getPosition().x << "HOLE POSITIONX:" << h.getPosition().x;
     // std::cout << "BALL POSITIONY: " << getPosition().y << "HOLE POSITIONY:" << h.getPosition().y << std::endl;
     // std::cout << "BALL VELOCITYX" << getVelocity().x << "BALL VELOCITYY" << getVelocity().y << std::endl;
-    if (abs(getVelocity().x) < 0.1 and abs(getVelocity().x) < 0.1 and getPosition().x > h.getPosition().x + 20 && getPosition().x < h.getPosition().x + 40 && getPosition().y > h.getPosition().y + 20 && getPosition().y < h.getPosition().y + 40){
+
+    // Win condition:
+    // Ball's velocity must not be too high, otherwise it will go past the hole.
+    if (abs(getVelocity().x) < 0.05 and abs(getVelocity().x) < 0.05 and getPosition().x > h.getPosition().x + 20 && getPosition().x < h.getPosition().x + 50 && getPosition().y > h.getPosition().y + 20 && getPosition().y < h.getPosition().y + 40){
         // std::cout << "WON ";
+
+        // Set win and find the hole's current position.
         setWin(true);
         target.x = h.getPosition().x;
         target.y = h.getPosition().y;
 
     }
 
+    // When the mouse is first clicked.
     if (mousePressed and canMove) {
         int mouseX = 0;
         int mouseY = 0;
@@ -104,6 +122,7 @@ void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, s
         setInitialMousePosition(mouseX, mouseY);
     }
 
+    // Keep track of the mouse as it is dragged out.
     if (mouseDown and canMove) {
         int mouseX = 0;
         int mouseY = 0;
@@ -148,6 +167,8 @@ void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, s
         powerMeter.at(0).setPosition(-100, -100);
         powerMeter.at(1).setPosition(-100, -100);
         canMove = false;
+
+        // Applying friction.
         setPosition(getPosition().x + getVelocity().x*deltaTime, getPosition().y + getVelocity().y*deltaTime);
         if (getVelocity().x > 0.0001 || getVelocity().x < -0.0001 || getVelocity().y > 0.0001 || getVelocity().y < -0.0001)
         {
@@ -164,6 +185,7 @@ void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, s
 
         }
 
+        // When the ball is stopped.
         else {
             setVelocity(0,0);
             int mouseX = 0;
@@ -173,6 +195,7 @@ void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, s
             canMove = true;
         }
 
+        // Checking for collision with the outer wall.
         if (getPosition().x + getCurrentFrame().w > 999)
         {
             setVelocity(-abs(getVelocity().x), getVelocity().y);
@@ -194,9 +217,10 @@ void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, s
             dirY = 1;
         }
 
-        // Collision logic with tiles (obstacles):
         // std::cout << "BALL POSITIONX: " << getPosition().x << "TILE POSITIONX:" << t.getPosition().x;
         // std::cout << "BALL POSITIONY: " << getPosition().y << "TILE POSITIONY:" << t.getPosition().y << std::endl;
+
+        // Collision logic with tiles (obstacles):
         for (Tile& t : tiles) {
             if (getPosition().x > t.getPosition().x + 60 and (getPosition().x < t.getPosition().x + 70 or getPosition().x < t.getPosition().x + 140) and getPosition().y > t.getPosition().y + 50 and (getPosition().y < t.getPosition().y + 70 or getPosition().y < t.getPosition().y + 130))
             {
@@ -241,11 +265,4 @@ int Ball::getStrokes() {
 bool Ball::isWin() {
     return win;
 }
-
-// Entity& Ball::getArrow() {
-//     return arrow;
-// }
-
-
-
 
