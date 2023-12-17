@@ -14,6 +14,8 @@
 #include <vector>
 #include <SDL_mixer.h>
 
+
+// Variable declarations for handling time and game states.
 Uint64 currentTick = SDL_GetPerformanceCounter();
 Uint64 lastTick = 0;
 double deltaTime = 0;
@@ -64,6 +66,7 @@ TTF_Font* font = loadFont("assets/font.ttf", 50);
 SDL_Color white = {255, 255, 255};
 SDL_Color black = {0, 0, 0};
 
+// Function to load levels with different layouts and obstacles. User will advance to next level if is able to complete current one
 void loadLevel(int level) {
 
     ball.setScale(0.2, 0.2);
@@ -110,6 +113,7 @@ void loadLevel(int level) {
     }
 }
 
+// Function to load and handle music.
 void loadMusic() {
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
     std::cerr << "SDL_mixer initialization failed: " << Mix_GetError() << std::endl; }
@@ -120,7 +124,7 @@ void loadMusic() {
     }
 
 }
-
+// Cleanup function to free resources.
 void cleanup() {
     if (backgroundMusic) {
         Mix_FreeMusic(backgroundMusic);
@@ -129,7 +133,7 @@ void cleanup() {
     Mix_CloseAudio(); // Clean up SDL_mixer
     SDL_Quit(); // SDL_Quit should be here
 }
-
+// Function to play the background music.
 void playMusic() {
     Mix_PlayMusic(backgroundMusic, -1); // -1 means loop indefinitely
 }
@@ -173,6 +177,7 @@ void update() {
 
 }
 
+// Function to handle all the graphics rendering.
 void graphics() {
     myScreen.clear();
 
@@ -205,7 +210,7 @@ void graphics() {
     myScreen.display();
 
 }
-
+//main function
 int main(int argc, char* argv[]) {
 
     // Locking the FPS to roughly 120 (saves GPU power).
