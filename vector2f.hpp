@@ -28,6 +28,12 @@ public:
     // Scalar multiplication
     Vector2f operator*(float scalar) const;
 
+    // Greater than operator
+    bool operator>(const Vector2f& left, const Vector2f& right);
+
+    // Lesser than operator
+    bool operator<(const Vector2f& left, const Vector2f& right);
+
     // Dot product of vectors
     float dot(const Vector2f& other) const;
 
