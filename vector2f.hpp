@@ -1,51 +1,59 @@
-#ifndef VECTOR2F_HPP
-#define VECTOR2F_HPP
+#include "vector2f.hpp"
 
-#include <iostream>
-#include <cmath>
+// Implementation of member functions
+Vector2f::Vector2f() : x(0.0f), y(0.0f) {}
 
-class Vector2f {
-public:
-    float x, y;
+Vector2f::Vector2f(float x, float y) : x(x), y(y) {}
 
-    // Constructors
-    Vector2f();
-    Vector2f(float x, float y);
+Vector2f::Vector2f(const Vector2f& other) : x(other.x), y(other.y) {}
 
-    // Copy constructor
-    Vector2f(const Vector2f& other);
+// OPERATOR OVERLOADING
+Vector2f& Vector2f::operator=(const Vector2f& other) {
+    if (this != &other) {
+        x = other.x;
+        y = other.y;
+    }
+    return *this;
+}
 
-    // OPERATOR OVERLOADING:
-    // Assignment operator
-    Vector2f& operator=(const Vector2f& other);
+Vector2f Vector2f::operator+(const Vector2f& other) const {
+    return Vector2f(x + other.x, y + other.y);
+}
 
-    // Addition of vectors
-    Vector2f operator+(const Vector2f& other) const;
+Vector2f Vector2f::operator-(const Vector2f& other) const {
+    return Vector2f(x - other.x, y - other.y);
+}
 
-    // Subtraction of vectors
-    Vector2f operator-(const Vector2f& other) const;
+Vector2f Vector2f::operator*(float scalar) const {
+    return Vector2f(x * scalar, y * scalar);
+}
 
-    // Scalar multiplication
-    Vector2f operator*(float scalar) const;
+float Vector2f::dot(const Vector2f& other) const {
+    return x * other.x + y * other.y;
+}
 
-    // Greater than operator
-    bool operator>(const Vector2f& left, const Vector2f& right);
+float Vector2f::magnitude() const {
+    return std::sqrt(x * x + y * y);
+}
 
-    // Lesser than operator
-    bool operator<(const Vector2f& left, const Vector2f& right);
+// Greater than operator
+bool Vector2f::operator>(const Vector2f& other) const {
+    return magnitude() > other.magnitude();
+}
 
-    // Dot product of vectors
-    float dot(const Vector2f& other) const;
+// Lesser than operator
+bool Vector2f::operator<(const Vector2f& other) const {
+    return magnitude() < other.magnitude();
+}
 
-    // Magnitude (length) of the vector
-    float magnitude() const;
+Vector2f Vector2f::normalize() const {
+    float mag = magnitude();
+    if (mag != 0.0f) {
+        return Vector2f(x / mag, y / mag);
+    }
+    return *this; // Avoid division by zero
+}
 
-    // Normalize the vector (make it a unit vector)
-    Vector2f normalize() const;
-
-    // Display the vector
-    void display() const;
-};
-
-#endif // VECTOR2F_HPP
-
+void Vector2f::display() const {
+    std::cout << "(" << x << ", " << y << ")" << std::endl;
+}
