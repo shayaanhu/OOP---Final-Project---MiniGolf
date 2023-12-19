@@ -30,7 +30,9 @@ private:
     bool canMove = true; // To check if the ball is allowed to be moved or not.
     bool win = false; // Once the ball is in the hole.
 
-    std::vector<Entity> powerMeter; // powerMeter to indicate the power with which the ball is launched.
+    // (STRONG) COMPOSITION:
+    std::vector<Powermeter> powerMeter; // powerMeter to indicate the power with which the ball is launched.
+    std::vector<Arrow> pointerArrow; // pointerArrow to indicate the direction the ball will be launched in.
     
 public:
     // Constructors:
@@ -49,7 +51,7 @@ public:
     Vector2f& getVelocity();
     Vector2f& getLaunchedVelocity();
     Vector2f& getInitialMousePosition();
-    std::vector<Entity> getPowerMeter();
+    std::vector<Powermeter> getPowerMeter();
     bool getWin();
     int getStrokes();
 
