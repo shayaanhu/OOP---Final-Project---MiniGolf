@@ -8,8 +8,8 @@ Ball::Ball() {}
 // Sets the ball's position and texture.
 // Also creates its powerMeter.
 Ball::Ball(Vector2f position, SDL_Texture* texture, SDL_Texture* powermeterFG, SDL_Texture* powermeterBG) : Entity(position, texture) {
-    powerMeter.push_back(Entity(Vector2f(0,0), powermeterBG));
-    powerMeter.push_back(Entity(Vector2f(0,0), powermeterFG));   
+    powerMeter.push_back(Powermeter(Vector2f(0,0), powermeterBG));
+    powerMeter.push_back(Powermeter(Vector2f(0,0), powermeterFG));   
     powerMeter.at(0).setScale(0.2, 0.2);
     powerMeter.at(1).setScale(0.2, 0.2);
 
@@ -259,7 +259,7 @@ void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, s
 
 }
 
-std::vector<Entity> Ball::getPowerMeter() {
+std::vector<Powermeter> Ball::getPowerMeter() {
     return powerMeter;
 }
 
@@ -270,3 +270,8 @@ int Ball::getStrokes() {
 bool Ball::isWin() {
     return win;
 }
+
+
+
+
+
