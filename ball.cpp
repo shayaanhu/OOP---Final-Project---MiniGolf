@@ -237,9 +237,14 @@ void Ball::update(double deltaTime, bool mouseDown, bool mousePressed, Hole h, s
         for (Rectangle& r : rect) {
 
             for (Tile& t : r.getTiles()) {
-            if (getPosition().x > t.getPosition().x + 60 and (getPosition().x < t.getPosition().x + 70 or getPosition().x < t.getPosition().x + 140) and getPosition().y > t.getPosition().y + 50 and (getPosition().y < t.getPosition().y + 70 or getPosition().y < t.getPosition().y + 130))
+
+            // std::cout << "BALL POSITIONX: " << getPosition().x << "TILE POSITIONX:" << t.getPosition().x;
+            // std::cout << "BALL POSITIONY: " << getPosition().y << "TILE POSITIONY:" << t.getPosition().y << std::endl;
+
+            if (getPosition().x > t.getPosition().x + 60 and (getPosition().x < t.getPosition().x + 70 or getPosition().x < t.getPosition().x + 130) and getPosition().y > t.getPosition().y + 50 and (getPosition().y < t.getPosition().y + 70 or getPosition().y < t.getPosition().y + 100))
             {
                 // std::cout << "COLLIDING" << std::endl;
+                
                 setVelocity(getVelocity().x*-1, getVelocity().y);
                 dirX *= -1;
 
@@ -265,4 +270,3 @@ int Ball::getStrokes() {
 bool Ball::isWin() {
     return win;
 }
-
