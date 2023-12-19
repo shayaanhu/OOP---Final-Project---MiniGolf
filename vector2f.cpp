@@ -36,6 +36,16 @@ float Vector2f::magnitude() const {
     return std::sqrt(x * x + y * y);
 }
 
+// Greater than operator
+bool Vector2f::operator>(const Vector2f& other) const {
+    return magnitude() > other.magnitude();
+}
+
+// Lesser than operator
+bool Vector2f::operator<(const Vector2f& other) const {
+    return magnitude() < other.magnitude();
+}
+
 Vector2f Vector2f::normalize() const {
     float mag = magnitude();
     if (mag != 0.0f) {
