@@ -14,8 +14,6 @@
 #include <vector>
 #include <SDL_mixer.h>
 
-
-// Variable declarations for handling time and game states.
 Uint64 currentTick = SDL_GetPerformanceCounter();
 Uint64 lastTick = 0;
 double deltaTime = 0;
@@ -30,21 +28,27 @@ bool mousePressed = false;
 Screen myScreen("MiniGolf", 1000, 650);
 
 // Loading all the textures and creating the game objects.
+
+// Our ball and its powerMeter.
 SDL_Texture* ballTexture = myScreen.loadTexture("assets/ball.png");
 SDL_Texture* powerMeterFG = myScreen.loadTexture("assets/powermeterFG.png");
 SDL_Texture* powerMeterBG = myScreen.loadTexture("assets/powermeterBG.png");
 Ball ball = Ball(Vector2f(0, 0), ballTexture, powerMeterFG, powerMeterBG);
 
+// Arrow which points in the direction the ball will be launched in.
 SDL_Texture* arrowTexture = myScreen.loadTexture("assets/arrow.png");
 Arrow arrow = Arrow(Vector2f(0,0), arrowTexture);
 
+// The hole which the player has to put the ball in.
 SDL_Texture* holeTexture = myScreen.loadTexture("assets/hole.png");
 Hole hole = Hole(Vector2f(0, 0), holeTexture);
 
+// Tiles (obstacles) that the ball collides with.
 SDL_Texture* tileLightTexture = myScreen.loadTexture("assets/tileLight.png");
 std::vector<Tile> tiles = {};
 std::vector<Rectangle> rect = {};
 
+// Screens.
 SDL_Texture* startScreenTexture = myScreen.loadTexture("assets/start.png");
 SDL_Texture* backgroundTexture = myScreen.loadTexture("assets/background.png");
 SDL_Texture* endScreenTexture = myScreen.loadTexture("assets/end.png");
@@ -52,6 +56,7 @@ SDL_Texture* endScreenTexture = myScreen.loadTexture("assets/end.png");
 // Music:
 Mix_Music* backgroundMusic = nullptr;
 
+// Function to load font (we were unable to load fonts because of "Library failed to initialize" error.)
 TTF_Font* loadFont(const std::string& fontPath, int fontSize) 
 {
     TTF_Font* font = TTF_OpenFont(fontPath.c_str(), fontSize);
@@ -66,46 +71,53 @@ TTF_Font* font = loadFont("assets/font.ttf", 50);
 SDL_Color white = {255, 255, 255};
 SDL_Color black = {0, 0, 0};
 
-// Function to load levels with different layouts and obstacles. User will advance to next level if is able to complete current one
+// Function which loads levels.
 void loadLevel(int level) {
 
+    // Setting the scales as the pngs were too big.
     ball.setScale(0.2, 0.2);
     hole.setScale(0.175, 0.175);
+
+    // Setting the arrow's position outside the screen as its not in use.
     arrow.setPosition(-100, -100);
 
+    // Pushing back tiles/rectangles to create obstacles.
+    // Setting the position for the hole based on the level.
+    // Setting the win to false each time a new level is loaded.
     switch (level) {
         case 0:
-        ball.setWin(false);
         tiles.push_back(Tile(Vector2f(125, 150), tileLightTexture));
         tiles.push_back(Tile(Vector2f(125, 50), tileLightTexture));
         tiles.push_back(Tile(Vector2f(325, 150), tileLightTexture));
         tiles.push_back(Tile(Vector2f(325, 50), tileLightTexture));
         hole.setPosition(330, 180);
+        ball.setWin(false);
         break;
 
         case 1:
-        ball.setWin(false);
         rect.push_back(Rectangle(Vector2f(600, -70), Vector2f(600, -20), tileLightTexture));
         rect.push_back(Rectangle(Vector2f(600, 80), Vector2f(600, 130), tileLightTexture));
         rect.push_back(Rectangle(Vector2f(600, 230), Vector2f(600, 280), tileLightTexture));
         hole.setPosition(800, 200);
+        ball.setWin(false);
         break;
 
         case 2:
-        ball.setWin(false);
         rect.push_back(Rectangle(Vector2f(0, -70), Vector2f(0, -20), tileLightTexture));
         rect.push_back(Rectangle(Vector2f(0, 80), Vector2f(0, 130), tileLightTexture));
         rect.push_back(Rectangle(Vector2f(0, 230), Vector2f(0, 280), tileLightTexture));
         hole.setPosition(0, 200);
+        ball.setWin(false);
         break;
 
         case 3:
-        ball.setWin(false);
         tiles.push_back(Tile(Vector2f(225, -25), tileLightTexture));
         tiles.push_back(Tile(Vector2f(225, 200), tileLightTexture));
         hole.setPosition(330, 180);
+        ball.setWin(false);
         break;
 
+        // Final state, when the player completes the course.
         case 4:
         ball.setWin(false);
         state = 2;
@@ -113,7 +125,7 @@ void loadLevel(int level) {
     }
 }
 
-// Function to load and handle music.
+// Function to load music.
 void loadMusic() {
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
     std::cerr << "SDL_mixer initialization failed: " << Mix_GetError() << std::endl; }
@@ -124,7 +136,8 @@ void loadMusic() {
     }
 
 }
-// Cleanup function to free resources.
+
+// Function to clean up resources once the game is closed.
 void cleanup() {
     if (backgroundMusic) {
         Mix_FreeMusic(backgroundMusic);
@@ -133,11 +146,15 @@ void cleanup() {
     Mix_CloseAudio(); // Clean up SDL_mixer
     SDL_Quit(); // SDL_Quit should be here
 }
+
 // Function to play the background music.
 void playMusic() {
     Mix_PlayMusic(backgroundMusic, -1); // -1 means loop indefinitely
 }
 
+// The main update function that constantly runs.
+// Checks states and wether or not the close button is pressed.
+// Increments levels based on the ball's scale.
 void update() {
     lastTick = currentTick;
     currentTick = SDL_GetPerformanceCounter();
@@ -177,17 +194,20 @@ void update() {
 
 }
 
-// Function to handle all the graphics rendering.
+// Our function to render everything.
 void graphics() {
     myScreen.clear();
 
+    // Start screen.
     if (state == 0) myScreen.render(0, 0, startScreenTexture);
 
+    // End screen.
     else if (state == 2) {
         myScreen.render(0, 0, endScreenTexture);
         // myScreen.renderCenter(0, 3 - 32, "YOU COMPLETED THE COURSE!", font, black);
     }
 
+    // Game running state.
     else if (state == 1) { 
         myScreen.render(0, 0, backgroundTexture);
         myScreen.render(arrow);
@@ -210,7 +230,7 @@ void graphics() {
     myScreen.display();
 
 }
-//main function
+
 int main(int argc, char* argv[]) {
 
     // Locking the FPS to roughly 120 (saves GPU power).
@@ -230,10 +250,3 @@ int main(int argc, char* argv[]) {
     
     return 0;
 }
-
-
-
-
-
-
-
